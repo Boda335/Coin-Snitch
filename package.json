@@ -1,0 +1,48 @@
+{
+    "name": "coinsnitch",
+    "version": "1.0.0",
+    "description": "A lightweight Discord currency transfer detector for NovaGolds, LutexBits, and Credits.",
+    "main": "index.js",
+    "author": "your-name-or-github", 
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/Boda335/Coin-Snitch"
+    },
+    "bugs": {
+      "url": "https://github.com/Boda335/Coin-Snitch/issues"
+    },
+    "homepage": "https://github.com/Boda335/Coin-Snitch#readme",
+    "files": [
+      "index.js",
+      "watchers/",
+      "filters/",
+      "utils/"
+    ],
+    "keywords": [
+      "discord",
+      "currency",
+      "bot",
+      "detector",
+      "probot",
+      "nova",
+      "credits",
+      "golds",
+      "luna",
+      "lutex"
+    ],
+    "scripts": {
+      "test": "node test.js",
+      "lint": "eslint ."
+    },
+    "dependencies": {
+      "discord.js": "^14.14.1"
+    },
+    "devDependencies": {
+      "eslint": "^8.56.0"
+    },
+    "engines": {
+      "node": ">=16.9.0"
+    }
+  }
+  
