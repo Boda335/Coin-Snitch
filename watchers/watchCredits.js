@@ -11,7 +11,18 @@ const buildFilter = require('../filters/creditsFilter');
  */
 async function watchCredits({ channel, botId, userId, amount, timeout }) {
     const filter = buildFilter({ botId, userId, amount });
-    return createWatcher(channel, filter, timeout);
+
+    return new Promise((resolve, reject) => {
+        createWatcher(channel, (message) => {
+            const matchedAmount = filter(message);
+            if (matchedAmount !== null) {
+                resolve({ message, amount: matchedAmount });
+                return true;
+            }
+            return false;
+        }, timeout).catch(reject);
+    });
 }
+
 
 module.exports = watchCredits;

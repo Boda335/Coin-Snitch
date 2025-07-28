@@ -40,165 +40,111 @@ npm install coinsnitch
 
 ---
 
-## 💡 Usage Example
+## 💡 Usage Examples
 
-Here’s how to use CoinSnitch to detect currency transfers in a Discord bot:
-
-### 🎯 `messageCreate` Event Example For watchLutexBits
+### 🎯 `messageUpdate` Example – `watchLutexBits`
 
 ```js
 const { watchLutexBits } = require("coinsnitch");
 
 client.on("messageCreate", async (message) => {
-  const targetChannelId = ""; // Replace with your target channel ID
-
-  if (message.author.bot) return;
-  if (message.channel.id !== targetChannelId) return;
-
-  const commands = ["!bits"];
-  const commandPattern = commands
-    .map((c) => c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
-    .join("|");
-  const regex = new RegExp(`^(${commandPattern})\\s+<?@?(\\d{17,})>?\\s+(\\d+)$`, "i");
-
-  const match = message.content.match(regex);
-  if (!match) return;
-
-  const bankId = ""; // Replace with your bank ID
-  const amount = 1; // Replace with the amount you want to transfer
   const options = {
-    channel: message.channel,
     client,
-    userId: bankId,
-    amount,
-    timeout: 60000,
+    channel: message.channel,
+    userId: "USER_ID",
+    amount: [5, 10], // Supports multiple amounts
+    timeout: 60000
   };
 
-  try {
-    const result = await watchLutexBits(options);
-    if (result) {
-      await message.reply("The transfer was successful!");
-      // More of your logic
-    } else {
-      await message.reply("The transfer failed.");
-    }
-  } catch (error) {
-    console.error("Error in watchLutexBits:", error);
-    await message.reply("An error occurred.");
+  const result = await watchLutexBits(options);
+
+  if (result) {
+    await message.reply(`✅ Successfully transferred $${result.amount}!`);
+  } else {
+    await message.reply("❌ Transfer failed or timed out.");
   }
 });
-
 ```
-### 🎯 `messageCreate` Event Example For watchNovaGolds
+
+---
+
+### 🎯 `messageCreate` Example – `watchNovaGolds`
+
 ```js
 const { watchNovaGolds } = require("coinsnitch");
 
 client.on("messageCreate", async (message) => {
-  const targetChannelId = ""; // Replace with your channel ID
-  const bankId = ""; // Replace with your bank ID
-  const botId = ""; // Replace with Nova's ID
-  const amount = 1; // Replace with desired transfer amount
-
-  if (message.author.bot) return;
-  if (message.channel.id !== targetChannelId) return;
-
-  const commands = ["!golds"];
-  const commandPattern = commands
-    .map((c) => c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
-    .join("|");
-  const regex = new RegExp(`^(${commandPattern})\\s+<?@?(\\d{17,})>?\\s+(\\d+)$`, "i");
-
-  const match = message.content.match(regex);
-  if (!match) return;
-
   const options = {
-    botId,
-    userId: bankId,
-    amount,
-    timeout: 60000,
     channel: message.channel,
+    botId: "BOT_ID",
+    userId: "USER_ID",
+    amount: [5, 10, 20], // Pass single or multiple amounts
+    timeout: 60000
   };
 
-  try {
-    const result = await watchNovaGolds(options);
-    if (result) {
-      await message.reply("✅ Transfer completed successfully.");
-    } else {
-      await message.reply("❌ Transfer failed.");
-    }
-  } catch (error) {
-    console.error("Error during gold transfer:", error);
-    await message.reply("⚠️ An unexpected error occurred.");
-  }
+  const result = await watchNovaGolds(options);
 
+  if (result) {
+    await message.reply(`🌟 NovaGolds transfer of $${result.amount} confirmed!`);
+  } else {
+    await message.reply("❌ No matching NovaGolds transfer detected.");
+  }
+});
 ```
-### 🎯 `messageCreate` Event Example For watchCredits
+
+---
+
+### 🎯 `messageCreate` Example – `watchCredits`
+
 ```js
 const { watchCredits } = require("coinsnitch");
 
 client.on("messageCreate", async (message) => {
-  const targetChannelId = ""; // Replace with your channel ID
-  const bankId = ""; // Replace with your bank ID
-  const botId = ""; // Replace with Nova's ID
-  const amount = 1; // Replace with desired transfer amount
-
-  if (message.author.bot) return;
-  if (message.channel.id !== targetChannelId) return;
-
-  const commands = ["c","C","#credit"];
-  const commandPattern = commands
-    .map((c) => c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
-    .join("|");
-  const regex = new RegExp(`^(${commandPattern})\\s+<?@?(\\d{17,})>?\\s+(\\d+)$`, "i");
-
-  const match = message.content.match(regex);
-  if (!match) return;
-
   const options = {
-    botId,
-    userId: bankId,
-    amount,
-    timeout: 60000,
     channel: message.channel,
+    botId: "BOT_ID",
+    userId: "USER_ID",
+    amount: 10, // Can also be an array like [10, 20]
+    timeout: 60000
   };
 
-  try {
-    const result = await watchCredits(options);
-    if (result) {
-      await message.reply("✅ Transfer completed successfully.");
-    } else {
-      await message.reply("❌ Transfer failed.");
-    }
-  } catch (error) {
-    console.error("Error during gold transfer:", error);
-    await message.reply("⚠️ An unexpected error occurred.");
-  }
+  const result = await watchCredits(options);
 
+  if (result) {
+    await message.reply(`💰 Credits transfer of $${result.amount} completed.`);
+  } else {
+    await message.reply("❌ Credits transfer not found.");
+  }
+});
 ```
 
 ---
 
 ## 🛠️ API Reference
 
-Each watcher returns a Promise that resolves to `true` or `false` based on detection success.
+Each watcher returns a Promise that resolves to an object or `false`.
 
 ### `watchNovaGolds(options)`
-| Option      | Type     | Required | Description |
-|-------------|----------|----------|-------------|
-| `channel`   | Channel  | ✅       | The channel where the bot sends transfer confirmation |
-| `botId`     | string   | ✅       | ID of the bot sending the transfer message |
-| `userId`    | string   | ✅       | ID of the user receiving currency |
-| `amount`    | number   | ✅       | Expected amount of currency transferred |
-| `timeout`   | number   | ✅       | Timeout in milliseconds |
+
+| Option      | Type             | Required | Description |
+|-------------|------------------|----------|-------------|
+| `channel`   | Channel           | ✅       | The channel to monitor |
+| `botId`     | string            | ✅       | Bot ID expected to send the confirmation |
+| `userId`    | string            | ✅       | Target user ID receiving the transfer |
+| `amount`    | number \| number[]| ✅       | Amount(s) to match |
+| `timeout`   | number            | ✅       | Timeout duration in milliseconds |
+
+#### Returns:
+```ts
+Promise<{ message: Message, amount: number } | false>
+```
 
 ### `watchCredits(options)` — Same as above  
-### `watchLutexBits(client, channel, options)`
-
-Also supports `messageUpdate` for bots that edit messages instead of sending new ones.
+### `watchLutexBits(options)` — Monitors `messageUpdate` events instead of new messages.
 
 ---
 
-## 📁 Folder Structure (If Cloned or Developed)
+## 📁 Folder Structure
 
 ```
 coin-snitch/
@@ -223,7 +169,7 @@ coin-snitch/
 - **💰 Credits**
 - **🌟 NovaGolds**
 - **🧊 LutexBits**
-- (More currencies can be added easily!)
+- ✅ Easily extendable for other types
 
 ---
 
@@ -231,11 +177,10 @@ coin-snitch/
 
 If you have any feedback, ideas, or bugs to report:
 
-- 💬 [Join our Discord](https://discord.gg/https://dsc.gg/enexus)
+- 💬 [Join our Discord](https://dsc.gg/enexus)
 
 ---
 
 ## 📘 License
 
 This project is licensed under the Apache License — see the [`LICENSE`](./LICENSE) file for details.
-
