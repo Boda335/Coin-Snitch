@@ -1,39 +1,51 @@
 /**
  * فلتر للتحقق من رسائل التحويل من بوتات معينة
  * @param {Object} options
- * @param {string} options.botId - معرف البوت (اختياري، غير مستخدم هنا مباشرة)
+ * @param {string} options.botId - معرف البوت (غير مستخدم فعليًا)
  * @param {string} options.userId - معرف المستخدم المستلم
- * @param {number} options.amount - المبلغ الذي يُفترض تحويله
- * @returns {(oldMessage: Message, newMessage: Message) => boolean}
+ * @param {number | number[]} options.amount - مبلغ واحد أو أكثر
+ * @returns {(oldMessage: Message, newMessage: Message) => number | null}
  */
-module.exports = ({ userId, amount }) => (oldMessage, newMessage) => {
+module.exports = ({ userId, amount }) => {
     const allowedBotIds = ['451379187031343104', '1276522930653630556'];
+    const amounts = Array.isArray(amount) ? amount : [amount];
 
-    if (!allowedBotIds.includes(newMessage.author.id)) return false;
+    return (oldMessage, newMessage) => {
+        if (!allowedBotIds.includes(newMessage.author.id)) return null;
 
-    const amountStr = `$${amount}`;
+        for (const a of amounts) {
+            const amountStr = `$${a}`;
+            const doubleAmountStr = `\`\`${amountStr}\`\``;
+            const singleAmountStr = `\`${amountStr}\``;
 
-    return (
-        // نمط XP Luna Bot
-        (
-            newMessage.content.includes(`<:yes:1284538119420383282> **Transfer successful! You have transferred \`\`${amountStr}\`\``) &&
-            newMessage.content.includes(`<@${userId}>`) &&
-            newMessage.content.includes("has been deducted** <:xpluna:1284524822306750544>")
-        ) ||
+            const username = newMessage.client.users.cache.get(userId)?.username || '';
 
-        // نمط البوت التقليدي
-        (
-            newMessage.content.includes(`You have successfully transferred \`\`${amountStr}\`\``) &&
-            newMessage.content.includes(`<@${userId}>`)
-        ) ||
+            const matched =
+                // نمط XP Luna Bot
+                (
+                    newMessage.content.includes(`<:yes:1284538119420383282> **Transfer successful! You have transferred ${doubleAmountStr}`) &&
+                    newMessage.content.includes(`<@${userId}>`) &&
+                    newMessage.content.includes("has been deducted** <:xpluna:1284524822306750544>")
+                ) ||
 
-        // نمط التأكيد المختصر (بـ يوزرنيم)
-        newMessage.content === `**> <:yea:1079670590807474216> Successfully transfered \`${amountStr}\` bits to ${newMessage.client.users.cache.get(userId)?.username || ''}!**` ||
+                // نمط البوت التقليدي
+                (
+                    newMessage.content.includes(`You have successfully transferred ${doubleAmountStr}`) &&
+                    newMessage.content.includes(`<@${userId}>`)
+                ) ||
 
-        // ✅ نمط التحويل المختصر الجديد
-        (
-            newMessage.content.includes(`Transferred \`\`${amountStr}\`\` to <@${userId}>`) &&
-            newMessage.content.includes(`\`\`(${userId})\`\``)
-        )
-    );
+                // نمط التأكيد المختصر (بـ يوزرنيم)
+                newMessage.content === `**> <:yea:1079670590807474216> Successfully transfered ${singleAmountStr} bits to ${username}!**` ||
+
+                // نمط التحويل المختصر الجديد
+                (
+                    newMessage.content.includes(`Transferred ${doubleAmountStr} to <@${userId}>`) &&
+                    newMessage.content.includes(`\`\`(${userId})\`\``)
+                );
+
+            if (matched) return a;
+        }
+
+        return null;
+    };
 };

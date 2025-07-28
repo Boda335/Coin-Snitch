@@ -1,6 +1,6 @@
 # Changelog
 
-## [v1.0.3] - 2025-07-28
+## [v1.0.4] - 2025-07-28
 
 ### 🚀 Added
 - Support for passing multiple `amount` values as an array (`number[]`) instead of a single fixed value.

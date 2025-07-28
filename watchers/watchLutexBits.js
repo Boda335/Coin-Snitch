@@ -1,4 +1,4 @@
-const buildFilter = require("../filters/lutexBitsFilter");
+const buildFilter = require('../filters/lutexBitsFilter');
 
 /**
  * يراقب تحديثات الرسائل بحثًا عن عملية تحويل ناجحة
@@ -11,34 +11,27 @@ const buildFilter = require("../filters/lutexBitsFilter");
  * @param {Client} options.client
  * @returns {Promise<{ message: import("discord.js").Message, amount: number } | false>}
  */
-async function watchLutexBits({
-  channel,
-  botId,
-  userId,
-  amount,
-  timeout = 60000,
-  client,
-}) {
-  const filter = buildFilter({ botId, userId, amount });
+async function watchLutexBits({ channel, botId, userId, amount, timeout = 60000, client }) {
+    const filter = buildFilter({ botId, userId, amount });
 
-  await client.users.fetch(userId); // تأكد من وجود الكاش للاسم
+    await client.users.fetch(userId); // تأكد من وجود الكاش للاسم
 
-  return new Promise((resolve) => {
-    const listener = (oldMessage, newMessage) => {
-      const matchedAmount = filter(oldMessage, newMessage);
-      if (matchedAmount !== null) {
-        client.off("messageUpdate", listener);
-        resolve({ message: newMessage, amount: matchedAmount });
-      }
-    };
+    return new Promise((resolve) => {
+        const listener = (oldMessage, newMessage) => {
+            const matchedAmount = filter(oldMessage, newMessage);
+            if (matchedAmount !== null) {
+                client.off('messageUpdate', listener);
+                resolve({ message: newMessage, amount: matchedAmount });
+            }
+        };
 
-    client.on("messageUpdate", listener);
+        client.on('messageUpdate', listener);
 
-    setTimeout(() => {
-      client.off("messageUpdate", listener);
-      resolve(false); // لم يتم المطابقة خلال المهلة
-    }, timeout);
-  });
+        setTimeout(() => {
+            client.off('messageUpdate', listener);
+            resolve(false); // لم يتم المطابقة خلال المهلة
+        }, timeout);
+    });
 }
 
 module.exports = watchLutexBits;

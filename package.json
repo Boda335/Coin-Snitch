@@ -1,6 +1,6 @@
 {
     "name": "coinsnitch",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "A lightweight Discord currency transfer detector for NovaGolds, LutexBits, and Credits.",
     "main": "index.js",
     "author": "boda335", 
