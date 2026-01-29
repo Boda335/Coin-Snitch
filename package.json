@@ -8,7 +8,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Boda335/Coin-Snitch"
+    "url": "git+https://github.com/Boda335/Coin-Snitch.git"
   },
   "bugs": {
     "url": "https://github.com/Boda335/Coin-Snitch/issues"
