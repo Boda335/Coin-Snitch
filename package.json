@@ -1,48 +1,50 @@
 {
-    "name": "coinsnitch",
-    "version": "1.0.4",
-    "description": "A lightweight Discord currency transfer detector for NovaGolds, LutexBits, and Credits.",
-    "main": "index.js",
-    "author": "boda335", 
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/Boda335/Coin-Snitch"
-    },
-    "bugs": {
-      "url": "https://github.com/Boda335/Coin-Snitch/issues"
-    },
-    "homepage": "https://github.com/Boda335/Coin-Snitch#readme",
-    "files": [
-      "index.js",
-      "watchers/",
-      "filters/",
-      "utils/"
-    ],
-    "keywords": [
-      "discord",
-      "currency",
-      "bot",
-      "detector",
-      "probot",
-      "nova",
-      "credits",
-      "golds",
-      "luna",
-      "lutex"
-    ],
-    "scripts": {
-      "test": "node test.js",
-      "lint": "eslint ."
-    },
-    "dependencies": {
-      "discord.js": "^14.14.1"
-    },
-    "devDependencies": {
-      "eslint": "^8.56.0"
-    },
-    "engines": {
-      "node": ">=16.9.0"
-    }
+  "name": "coinsnitch",
+  "version": "1.5.0",
+  "description": "A lightweight Discord currency transfer detector for NovaGolds, LutexBits, and Credits.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "boda335",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Boda335/Coin-Snitch"
+  },
+  "bugs": {
+    "url": "https://github.com/Boda335/Coin-Snitch/issues"
+  },
+  "homepage": "https://github.com/Boda335/Coin-Snitch#readme",
+  "files": [
+    "dist/"
+  ],
+  "keywords": [
+    "discord",
+    "currency",
+    "bot",
+    "detector",
+    "probot",
+    "nova",
+    "credits",
+    "golds",
+    "luna",
+    "lutex"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "node test.js",
+    "lint": "eslint . --ext .ts"
+  },
+  "dependencies": {
+    "discord.js": "^14.14.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=16.9.0"
   }
-  
+}
